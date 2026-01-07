@@ -1,0 +1,108 @@
+<div class="container">
+  <h1>Fourth Step Inventory</h1>
+  <p>A searching and fearless moral inventory of ourselves.</p>
+
+  <mat-tab-group>
+    <!-- Resentments Tab -->
+    <mat-tab label="Resentments">
+      <div class="inventory-section">
+        <h2>Resentment List</h2>
+        <mat-card>
+          <mat-card-content>
+            <form (ngSubmit)="addItem(newResentment)">
+              <mat-form-field appearance="fill">
+                <mat-label>I'm resentful at...</mat-label>
+                <input matInput [(ngModel)]="newResentment.description" name="resentment_desc" required>
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>The cause...</mat-label>
+                <textarea matInput [(ngModel)]="newResentment.affects_what" name="resentment_cause"></textarea>
+              </mat-form-field>
+               <mat-form-field appearance="fill">
+                <mat-label>My part in it...</mat-label>
+                <textarea matInput [(ngModel)]="newResentment.my_part" name="resentment_my_part"></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Add Resentment</button>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-list>
+          <div *ngFor="let item of resentments">
+            <mat-list-item>
+              <div mat-line><strong>Resentful at:</strong> {{ item.description }}</div>
+              <div mat-line><strong>The cause:</strong> {{ item.affects_what }}</div>
+              <div mat-line><strong>My part:</strong> {{ item.my_part }}</div>
+              <button mat-icon-button (click)="deleteItem(item.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </div>
+    </mat-tab>
+
+    <!-- Fears Tab -->
+    <mat-tab label="Fears">
+      <div class="inventory-section">
+        <h2>Fear Inventory</h2>
+        <mat-card>
+          <mat-card-content>
+            <form (ngSubmit)="addItem(newFear)">
+              <mat-form-field appearance="fill">
+                <mat-label>My fear is...</mat-label>
+                <textarea matInput [(ngModel)]="newFear.description" name="fear_desc" required></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Add Fear</button>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-list>
+          <div *ngFor="let item of fears">
+            <mat-list-item>
+              <div mat-line>{{ item.description }}</div>
+              <button mat-icon-button (click)="deleteItem(item.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </div>
+    </mat-tab>
+
+    <!-- Sexual Inventory Tab -->
+    <mat-tab label="Sexual Inventory">
+      <div class="inventory-section">
+        <h2>Sexual Inventory</h2>
+        <mat-card>
+          <mat-card-content>
+            <form (ngSubmit)="addItem(newSexualItem)">
+              <mat-form-field appearance="fill">
+                <mat-label>Who have I harmed?</mat-label>
+                <input matInput [(ngModel)]="newSexualItem.description" name="sexual_desc" required>
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>What did I do?</mat-label>
+                <textarea matInput [(ngModel)]="newSexualItem.my_part" name="sexual_my_part"></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Add to Inventory</button>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-list>
+          <div *ngFor="let item of sexualInventory">
+            <mat-list-item>
+              <div mat-line><strong>Person harmed:</strong> {{ item.description }}</div>
+              <div mat-line><strong>What I did:</strong> {{ item.my_part }}</div>
+              <button mat-icon-button (click)="deleteItem(item.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
