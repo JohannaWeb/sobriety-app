@@ -1,0 +1,46 @@
+.container {
+  padding: 20px;
+}
+
+.milestones-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.milestone-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 200px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.milestone-card.achieved {
+  opacity: 1;
+}
+
+.badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+
+.badge.bronze {
+  background-color: #cd7f32;
+}
+
+.badge.silver {
+  background-color: #c0c0c0;
+}
+
+.badge.gold {
+  background-color: #ffd700;
+}
+
+.milestone-name {
+  font-weight: bold;
+}

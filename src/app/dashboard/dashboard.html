@@ -1,0 +1,26 @@
+<div class="container">
+  <h1>Dashboard</h1>
+  <p>Welcome to your sobriety tracker!</p>
+
+  <div class="counter">
+    <h2>You have been sober for:</h2>
+    <div class="timer">
+      <span>{{ days }} days</span>
+      <span>{{ hours }} hours</span>
+      <span>{{ minutes }} minutes</span>
+      <span>{{ seconds }} seconds</span>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="dateForm" (ngSubmit)="saveNewStartDate()">
+        <mat-form-field>
+          <mat-label>Sobriety Start Date</mat-label>
+          <input matInput type="datetime-local" formControlName="newDate">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Save</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

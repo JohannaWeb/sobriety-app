@@ -1,0 +1,39 @@
+<div class="container">
+  <h1>Journal</h1>
+  <p>Log your thoughts and feelings here.</p>
+
+  <form [formGroup]="entryForm" (ngSubmit)="submitEntry()">
+    <mat-form-field appearance="fill">
+      <mat-label>New Entry</mat-label>
+      <textarea matInput formControlName="content" placeholder="Write about your day..."></textarea>
+    </mat-form-field>
+
+    <mat-radio-group formControlName="mood" class="mood-group">
+      <mat-label>Mood:</mat-label>
+      @for (mood of moods; track mood) {
+        <mat-radio-button [value]="mood">{{ mood }}</mat-radio-button>
+      }
+    </mat-radio-group>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="!entryForm.valid">
+      {{ isEditing ? 'Update Entry' : 'Add Entry' }}
+    </button>
+    <button mat-button color="warn" (click)="cancelEdit()" *ngIf="isEditing">Cancel</button>
+  </form>
+
+  <div class="entries">
+    @for (entry of entries; track entry.id) {
+      <mat-card>
+        <mat-card-title>Journal Entry <span class="mood">{{ entry.mood }}</span></mat-card-title>
+        <mat-card-subtitle>{{ entry.date | date:'short' }}</mat-card-subtitle>
+        <mat-card-content>
+          <p>{{ entry.content }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button (click)="editEntry(entry)">Edit</button>
+          <button mat-button color="warn" (click)="deleteEntry(entry.id!)">Delete</button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Resources</h1>
+  <p>Find helpful resources for your journey.</p>
+
+  <mat-nav-list>
+    @for (resource of resources; track resource.name) {
+      <a mat-list-item [href]="resource.url" target="_blank">
+        {{ resource.name }}
+      </a>
+    }
+  </mat-nav-list>
+</div>

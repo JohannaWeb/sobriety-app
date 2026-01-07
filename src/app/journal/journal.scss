@@ -1,0 +1,33 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+mat-card {
+  width: 100%;
+}
+
+.mood-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mood {
+  margin-left: 10px;
+  font-size: 1.2em;
+}

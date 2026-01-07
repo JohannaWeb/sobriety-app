@@ -1,0 +1,39 @@
+<div class="container">
+  <h1>Support Person</h1>
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="supportForm" (ngSubmit)="saveSupportPerson()">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Save</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="supportForm.valid">
+    <mat-card-content class="actions">
+      <a mat-raised-button color="accent" [href]="'tel:' + supportForm.value.phone">
+        <mat-icon>call</mat-icon>
+        Call
+      </a>
+      <a mat-raised-button color="accent" [href]="'sms:' + supportForm.value.phone">
+        <mat-icon>message</mat-icon>
+        Text
+      </a>
+      <a mat-raised-button color="accent" [href]="'mailto:' + supportForm.value.email">
+        <mat-icon>email</mat-icon>
+        Email
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>

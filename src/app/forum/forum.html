@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Community Forum</h1>
+
+  <mat-card class="post-form">
+    <mat-card-content>
+      <form [formGroup]="postForm" (ngSubmit)="createPost()">
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Content</mat-label>
+          <textarea matInput formControlName="content"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Create Post</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="post-list">
+    @for (post of posts; track post._id) {
+      <mat-card>
+        <mat-card-title>{{ post.title }}</mat-card-title>
+        <mat-card-subtitle>by {{ post.author }}</mat-card-subtitle>
+        <mat-card-content>
+          <p>{{ post.content }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

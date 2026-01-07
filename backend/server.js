@@ -405,27 +405,24 @@ app.get('/api/aa-meetings', async (req, res) => {
 // Proxy for AA Daily Reflection
 app.get('/api/aa-daily-reflection', async (req, res) => {
   try {
-    const reflections = require('./daily_reflections.json');
-    const today = new Date();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
-    const formattedDate = `${month}-${day}`;
+    const response = await fetch('https://www.aa.org/daily-reflections');
+    const html = await response.text();
+    const $ = cheerio.load(html);
 
-    let reflection = reflections.find(r => r.date === formattedDate);
+    // Extracting the title (e.g., "Daily Reflections | January 06 THE VICTORY OF SURRENDER")
+    const title = $('hgroup h2.field--item').text().trim();
+    // Extracting the main reflection content
+    // This targets the specific div containing the reflection text and its source
+    const content = $('.views-element-carousel .field--name-body .field--item').map((i, el) => $(el).text()).get().join('\n\n').trim();
 
-    // If today's reflection is not found, return a random one or a default
-    if (!reflection) {
-      reflection = reflections[Math.floor(Math.random() * reflections.length)];
-      // If there are no reflections, provide a hardcoded fallback
-      if (!reflection) {
-        return res.json({ title: "No Reflection Today", content: "Stay strong and focused on your journey one day at a time." });
-      }
+    if (!title || !content) {
+      throw new Error('Could not extract daily reflection content.');
     }
 
-    res.json(reflection);
+    res.json({ title, content });
   } catch (error) {
-    console.error('Error serving AA Daily Reflection from local file:', error);
-    res.status(500).json({ error: 'Failed to serve AA Daily Reflection.' });
+    console.error('Error proxying AA Daily Reflection:', error);
+    res.status(500).json({ error: 'Failed to fetch AA Daily Reflection.' });
   }
 });
 

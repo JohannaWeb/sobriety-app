@@ -1,0 +1,54 @@
+.counter {
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.timer span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+}
+
+mat-card {
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.milestones-card {
+  margin-top: 20px;
+}
+
+.milestones-card p {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+
+.milestones-card p:last-child {
+  border-bottom: none;
+}
+
+.achieved {
+  color: green;
+  font-weight: bold;
+}

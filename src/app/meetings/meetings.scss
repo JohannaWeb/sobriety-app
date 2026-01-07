@@ -1,0 +1,89 @@
+.container {
+  padding: 20px;
+}
+
+mat-card {
+  margin-top: 20px;
+}
+
+.address {
+  margin-left: 20px;
+  color: #666;
+}
+
+.chat-room {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* Adjust based on header/footer */
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.message-card {
+  margin-bottom: 8px;
+  max-width: 70%;
+  align-self: flex-start;
+}
+
+.message-author {
+  font-size: 0.8em;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.message-content {
+  font-size: 1em;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.back-button {
+  margin-bottom: 10px;
+}
+
+.sharing-queue-section {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.current-sharer {
+  margin-bottom: 5px;
+}
+
+.sharing-queue-list mat-list-item {
+  height: auto;
+  min-height: 36px; /* Default mat-list-item height */
+}
+
+.sharing-queue-list {
+  padding: 0;
+}
+
+.voice-call-section {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #cceeff; /* Light blue border */
+  background-color: #e6f7ff; /* Light blue background */
+  margin-bottom: 10px;
+}
+
+.active-participants {
+  margin-bottom: 10px;
+}
+
+/* Style for the author input field */
+.mat-mdc-form-field {
+  margin-top: 10px;
+}

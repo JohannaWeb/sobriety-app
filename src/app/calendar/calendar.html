@@ -1,0 +1,32 @@
+<div class="container">
+  <h1>Calendar View</h1>
+
+  <div class="calendar-header">
+    <button mat-button (click)="prevMonth()">Previous</button>
+    <h2>{{ currentMonth | date:'MMMM yyyy' }}</h2>
+    <button mat-button (click)="nextMonth()">Next</button>
+  </div>
+
+  <mat-grid-list cols="7" rowHeight="100px">
+    <mat-grid-tile><strong>Sun</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Mon</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Tue</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Wed</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Thu</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Fri</strong></mat-grid-tile>
+    <mat-grid-tile><strong>Sat</strong></mat-grid-tile>
+
+    @for (day of calendarDays; track day.date) {
+      <mat-grid-tile [class.has-entries]="day.entries.length > 0">
+        <div class="day-cell">
+          <div class="date-number">{{ day.date | date:'d' }}</div>
+          <div class="day-entries">
+            @for (entry of day.entries; track entry.id) {
+              <div class="entry-mood">{{ entry.mood }}</div>
+            }
+          </div>
+        </div>
+      </mat-grid-tile>
+    }
+  </mat-grid-list>
+</div>

@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Milestones</h1>
+  <div class="milestones-container">
+    @for (milestone of milestones; track milestone.name) {
+      <div class="milestone-card" [class.achieved]="milestone.achieved">
+        <div class="badge" [class]="milestone.badge"></div>
+        <div class="milestone-name">{{ milestone.name }}</div>
+        <div class="milestone-status">{{ milestone.achieved ? 'Achieved! 🎉' : 'Pending...' }}</div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="container">
+  <h1>Relapse Prevention Plan</h1>
+  <form [formGroup]="planForm" (ngSubmit)="savePlan()">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Triggers</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div formArrayName="triggers">
+          @for (trigger of triggers.controls; track trigger; let i = $index) {
+            <div [formGroupName]="i" class="form-row">
+              <mat-form-field>
+                <input matInput formControlName="trigger" placeholder="Trigger">
+              </mat-form-field>
+              <button mat-icon-button type="button" (click)="removeTrigger(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+        <button mat-button type="button" (click)="addTrigger()">Add Trigger</button>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Coping Strategies</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div formArrayName="copingStrategies">
+          @for (strategy of copingStrategies.controls; track strategy; let i = $index) {
+            <div [formGroupName]="i" class="form-row">
+              <mat-form-field>
+                <input matInput formControlName="strategy" placeholder="Coping Strategy">
+              </mat-form-field>
+              <button mat-icon-button type="button" (click)="removeCopingStrategy(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+        <button mat-button type="button" (click)="addCopingStrategy()">Add Coping Strategy</button>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Support Contacts</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div formArrayName="supportContacts">
+          @for (contact of supportContacts.controls; track contact; let i = $index) {
+            <div [formGroupName]="i" class="form-row">
+              <mat-form-field>
+                <input matInput formControlName="name" placeholder="Name">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput formControlName="phone" placeholder="Phone">
+              </mat-form-field>
+              <button mat-icon-button type="button" (click)="removeSupportContact(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+        <button mat-button type="button" (click)="addSupportContact()">Add Support Contact</button>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <button mat-raised-button color="primary" type="submit">Save Plan</button>
+  </form>
+</div>

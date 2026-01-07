@@ -1,0 +1,95 @@
+<div class="container">
+  <h1>Meetings</h1>
+
+  <div *ngIf="!selectedMeetingRoom">
+    <h2>Text Meetings</h2>
+    <mat-card>
+      <mat-card-content>
+        <mat-list>
+          @for (room of meetingRooms; track room.id) {
+            <mat-list-item (click)="selectRoom(room)">
+              <h3 mat-line>{{ room.name }}</h3>
+              <p mat-line>{{ room.description }}</p>
+            </mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+
+    <h2 style="margin-top: 20px;">Local AA Meetings</h2>
+    <mat-card>
+      <mat-card-content>
+        <mat-list>
+          @for (meeting of meetings; track meeting.name) {
+            <mat-list-item>
+              <h3 mat-line>{{ meeting.name }}</h3>
+              <p mat-line>
+                <span>{{ meeting.time }}</span>
+                <span class="address">{{ meeting.address }}</span>
+              </p>
+            </mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="selectedMeetingRoom" class="chat-room">
+    <button mat-button (click)="selectedMeetingRoom = null; stopPolling()" class="back-button">
+      &lt; Back to Rooms
+    </button>
+    <h2>{{ selectedMeetingRoom.name }}</h2>
+
+    <div class="sharing-queue-section">
+      <h3>Sharing Queue</h3>
+      <div *ngIf="currentSharer" class="current-sharer">
+        <strong>Currently Sharing:</strong> {{ currentSharer.author }}
+      </div>
+      <div *ngIf="sharingQueue.length > 0">
+        <strong>Next in Queue:</strong>
+        <mat-list>
+          @for (entry of sharingQueue; track entry.id) {
+            <mat-list-item>
+              {{ entry.author }}
+              <button mat-icon-button *ngIf="entry.author === messageAuthor" (click)="leaveQueue()">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </mat-list-item>
+          }
+        </mat-list>
+      </div>
+      <button mat-raised-button color="accent" (click)="joinQueue()" [disabled]="isInQueue">Join Share Queue</button>
+      <button mat-raised-button color="warn" (click)="leaveQueue()" [disabled]="!isInQueue">Leave Queue</button>
+    </div>
+
+    <div class="voice-call-section">
+      <h3>Voice Call</h3>
+      <div *ngIf="activeVoiceParticipants.length > 0" class="active-participants">
+        <strong>Active Participants:</strong> {{ activeVoiceParticipants.join(', ') }}
+      </div>
+      <button mat-raised-button color="primary" (click)="joinVoiceCall()" [disabled]="isInVoiceCall">Join Voice Call</button>
+      <button mat-raised-button color="warn" (click)="leaveVoiceCall()" [disabled]="!isInVoiceCall">Leave Voice Call</button>
+    </div>
+
+    <mat-form-field class="full-width">
+      <mat-label>Your Name</mat-label>
+      <input matInput [(ngModel)]="messageAuthor" placeholder="Enter your name">
+    </mat-form-field>
+
+    <div class="messages-container">
+      @for (message of messages; track message.id) {
+        <mat-card class="message-card">
+          <mat-card-content>
+            <p class="message-author">{{ message.author }} at {{ message.timestamp | date:'shortTime' }}</p>
+            <p class="message-content">{{ message.content }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+    <mat-form-field class="full-width">
+      <mat-label>Message</mat-label>
+      <input matInput [(ngModel)]="newMessageContent" (keyup.enter)="sendMessage()" placeholder="Type your message...">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+  </div>
+</div>
