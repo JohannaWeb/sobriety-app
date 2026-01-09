@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { JournalEntry } from './journal/journal';
 import { Post } from './forum/forum';
 import { MeetingRoom, Message, QueueEntry } from './meetings/meetings.model';
@@ -9,7 +10,7 @@ import { MeetingRoom, Message, QueueEntry } from './meetings/meetings.model';
   providedIn: 'root',
 })
 export class Api {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = '/api';
 
   constructor(private http: HttpClient) { }
 
@@ -53,24 +54,24 @@ export class Api {
     return this.http.get<{ messages: Message[] }>(`${this.apiUrl}/meeting-rooms/${roomId}/messages`);
   }
 
-  sendMessage(roomId: number, content: string, author: string): Observable<Message> {
+  sendMessage(roomId: number, content: string, author?: string): Observable<Message> {
     return this.http.post<Message>(`${this.apiUrl}/meeting-rooms/${roomId}/messages`, { content, author });
   }
 
-  joinQueue(roomId: number, author: string): Observable<any> {
+  joinQueue(roomId: number, author?: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/meeting-rooms/${roomId}/queue`, { author });
-  }
-
-  getQueue(roomId: number): Observable<{ queue: QueueEntry[] }> {
-    return this.http.get<{ queue: QueueEntry[] }>(`${this.apiUrl}/meeting-rooms/${roomId}/queue`);
   }
 
   leaveQueue(roomId: number, author: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/meeting-rooms/${roomId}/queue/${author}`);
   }
 
-  joinVoiceCall(roomId: number, author: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/meeting-rooms/${roomId}/voice-call/join`, { author });
+  getQueue(roomId: number): Observable<{ queue: QueueEntry[] }> {
+    return this.http.get<{ queue: QueueEntry[] }>(`${this.apiUrl}/meeting-rooms/${roomId}/queue`);
+  }
+
+  joinVoiceCall(roomId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/meeting-rooms/${roomId}/voice-call/join`, {});
   }
 
   getFourthStepInventory(): Observable<any[]> {
@@ -83,5 +84,13 @@ export class Api {
 
   deleteFourthStepItem(id: number): Observable<{ changes: number }> {
     return this.http.delete<{ changes: number }>(`${this.apiUrl}/fourth-step/${id}`);
+  }
+
+  getOpenViduToken(roomId: string): Observable<string> {
+    return this.http.post(`${this.apiUrl}/openvidu/sessions`, { customSessionId: roomId }, { responseType: 'text' }).pipe(
+      switchMap((sessionId: string) => {
+        return this.http.post(`${this.apiUrl}/openvidu/sessions/${sessionId}/connections`, {}, { responseType: 'text' });
+      })
+    );
   }
 }

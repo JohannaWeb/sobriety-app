@@ -1,0 +1,28 @@
+.video-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.publisher-video {
+  flex-grow: 1;
+  margin-bottom: 10px;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.subscriber-videos {
+  display: flex;
+  gap: 10px;
+  height: 200px;
+  overflow-x: auto;
+}
+
+.subscriber-videos app-user-video {
+  width: 200px;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}

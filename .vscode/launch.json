@@ -1,20 +1,33 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
       "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "request": "attach",
+      "name": "Debug Frontend",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "pathMapping": {
+        "/": "${workspaceFolder}/",
+        "src/": "${workspaceFolder}/src/"
+      }
     },
     {
-      "name": "ng test",
-      "type": "chrome",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
+      "name": "Debug Backend",
+      "program": "${workspaceFolder}/backend/server.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "outputCapture": "std"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All",
+      "configurations": ["Debug Backend", "Debug Frontend"]
     }
   ]
 }

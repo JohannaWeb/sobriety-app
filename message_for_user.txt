@@ -1,0 +1,41 @@
+I understand you'd like me to set up the OpenVidu server for you. Unfortunately, as a CLI agent, I cannot directly execute complex system-level commands like installing Docker, downloading images, or running services that persist outside of this session. My capabilities are primarily focused on modifying code and files within your project directory.
+
+However, I can provide you with the instructions to set up OpenVidu using Docker, which is the recommended and easiest way to get it running.
+
+**Steps to set up OpenVidu Server using Docker:**
+
+1.  **Install Docker and Docker Compose:** If you don't have them already, you'll need to install Docker and Docker Compose on your machine. You can find instructions for your operating system on the official Docker website.
+    *   [Docker Desktop for Windows/macOS](https://www.docker.com/products/docker-desktop)
+    *   [Docker Engine for Linux](https://docs.docker.com/engine/install/)
+
+2.  **Download OpenVidu Server Configuration:**
+    Create a new directory for your OpenVidu setup, then download the latest OpenVidu deployment files. You can usually find these in the OpenVidu GitHub repository or documentation. A common way is to clone their deployment repository:
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-docker.git
+    cd openvidu-docker
+    ```
+    *Note: Replace `openvidu-docker` with the correct repository name if it changes.*
+
+3.  **Configure OpenVidu:**
+    Inside the `openvidu-docker` directory, you'll find a `.env` file. Open this file and configure it. The most important variables are:
+    *   `DOMAIN_OR_PUBLIC_IP`: Set this to `localhost` if you're running it on the same machine, or your machine's public IP address if you want to access it from other devices.
+    *   `OPENVIDU_SECRET`: **THIS IS CRITICAL.** Set this to a strong, secret password. Make sure this *exact* secret matches the `OPENVIDU_SECRET` value in your `backend/server.js` file (or the environment variable you set).
+
+4.  **Start OpenVidu Server:**
+    Once configured, you can start the OpenVidu server using Docker Compose:
+    ```bash
+    ./openvidu start
+    ```
+    This command will pull the necessary Docker images and start all OpenVidu services. It might take a few minutes the first time.
+
+5.  **Verify OpenVidu is Running:**
+    Open your web browser and navigate to `https://localhost:4443` (or whatever `DOMAIN_OR_PUBLIC_IP` you configured). You should see the OpenVidu dashboard.
+
+**After setting up OpenVidu:**
+
+*   Ensure the `OPENVIDU_URL` in your `backend/server.js` matches your `DOMAIN_OR_PUBLIC_IP` and includes the port (e.g., `https://localhost:4443`).
+*   Ensure the `OPENVIDU_SECRET` in your `backend/server.js` matches the `OPENVIDU_SECRET` you set in OpenVidu's `.env` file.
+
+Once OpenVidu is running and your backend is configured, restart your `sobriety-app` (`npm start`) and the video/voice call features should function correctly.
+
+I hope these instructions are helpful! Let me know if you have any questions about these steps.

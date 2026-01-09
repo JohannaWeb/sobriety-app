@@ -1,0 +1,9 @@
+<div class="video-container">
+  <div class="publisher-video" *ngIf="publisher">
+    <app-user-video [streamManager]="publisher"></app-user-video>
+  </div>
+  <div class="subscriber-videos">
+    <app-user-video *ngFor="let sub of subscribers" [streamManager]="sub"></app-user-video>
+  </div>
+</div>
+

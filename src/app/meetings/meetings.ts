@@ -13,22 +13,21 @@ import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
 import { Subscription, interval } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import Peer from 'simple-peer'; // Import simple-peer
+import { OpenVidu, Publisher, Session, Subscriber } from 'openvidu-browser';
+import { VideoCallComponent } from '../video-call/video-call';
 
-interface Meeting {
-  name: string;
-  time: string;
-  address: string;
-}
+
+
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-meetings',
-  imports: [CommonModule, HttpClientModule, MatCardModule, MatListModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, HttpClientModule, MatCardModule, MatListModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule, MatIconModule, VideoCallComponent, MatTabsModule],
   templateUrl: './meetings.html',
   styleUrls: ['./meetings.scss'],
   standalone: true // This component is standalone
 })
 export class Meetings implements OnInit, OnDestroy {
-  meetings: Meeting[] = [];
   meetingRooms: MeetingRoom[] = [];
   selectedMeetingRoom: MeetingRoom | null = null;
   messages: Message[] = [];
@@ -43,21 +42,21 @@ export class Meetings implements OnInit, OnDestroy {
   peers = new Map<string, ConnectedPeer>(); // Map<author, ConnectedPeer>
   remoteAudioElements: HTMLAudioElement[] = [];
 
+  // OpenVidu specific properties
+  openVidu = {
+    OV: new OpenVidu(),
+    session: undefined as Session | undefined,
+    publisher: undefined as Publisher | undefined,
+    subscribers: [] as Subscriber[],
+  };
+  isInVideoCall = false;
+
   private pollingSubscription: Subscription | null = null;
 
   constructor(private http: HttpClient, private api: Api, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
-    // Existing logic for AA meetings
-    const lat = 40.7128;
-    const lng = -74.0060;
-    this.http.get<any[]>(`/api/aa-meetings?latitude=${lat}&longitude=${lng}`).subscribe(data => {
-      this.meetings = data.map(meeting => ({
-        name: meeting.name,
-        time: meeting.start_time,
-        address: meeting.formatted_address
-      }));
-    });
+
 
     this.fetchMeetingRooms();
     if (isPlatformBrowser(this.platformId)) {
@@ -81,6 +80,7 @@ export class Meetings implements OnInit, OnDestroy {
     this.stopPolling();
     this.disconnectWebSocket();
     this.leaveVoiceCall(true); // Force cleanup
+    this.leaveVideoCall();
   }
 
   get isInQueue(): boolean {
@@ -110,6 +110,7 @@ export class Meetings implements OnInit, OnDestroy {
     this.stopPolling(); // Stop polling for previous room if any
     this.disconnectWebSocket(); // Disconnect from previous room's WebSocket if any
     this.leaveVoiceCall(true); // Leave any active voice call
+    this.leaveVideoCall(); // Leave any active video call
     this.startPolling(); // Start polling for the new room
     this.connectWebSocket(); // Connect WebSocket for the new room
   }
@@ -330,7 +331,7 @@ export class Meetings implements OnInit, OnDestroy {
         next: () => {
           this.fetchQueue(this.selectedMeetingRoom!.id);
         },
-        error: (err) => {
+        error: (err: any) => {
           if (err.status === 409) {
             alert('You are already in the queue.');
           } else {
@@ -393,6 +394,83 @@ export class Meetings implements OnInit, OnDestroy {
     this.disconnectWebSocket();
 
     console.log('Left voice call and cleaned up resources.');
+  }
+
+  isInCall(): boolean {
+    return this.isInVoiceCall || this.isInVideoCall;
+  }
+
+  leaveCall() {
+    if (this.isInVoiceCall) {
+      this.leaveVoiceCall();
+    }
+    if (this.isInVideoCall) {
+      this.leaveVideoCall();
+    }
+  }
+
+  async joinVideoCall() {
+    if (!this.selectedMeetingRoom) return;
+    
+    // Temporarily disable voice call when in a video call
+    if (this.isInVoiceCall) {
+        this.leaveVoiceCall();
+    }
+
+    this.isInVideoCall = true;
+
+    this.openVidu.session = this.openVidu.OV.initSession();
+    const session = this.openVidu.session;
+
+    session.on('streamCreated', (event) => {
+      const subscriber = session.subscribe(event.stream, undefined);
+      this.openVidu.subscribers.push(subscriber);
+    });
+
+    session.on('streamDestroyed', (event) => {
+      const index = this.openVidu.subscribers.findIndex(s => s.stream.streamId === event.stream.streamId);
+      if (index > -1) {
+        this.openVidu.subscribers.splice(index, 1);
+      }
+    });
+
+    try {
+      const token = await this.api.getOpenViduToken(this.selectedMeetingRoom.id.toString()).toPromise();
+
+      if (token) {
+        await session.connect(token, { clientData: this.messageAuthor });
+      } else {
+        throw new Error('Failed to get OpenVidu token');
+      }
+
+      const publisher = await this.openVidu.OV.initPublisherAsync(undefined, {
+        audioSource: undefined,
+        videoSource: undefined,
+        publishAudio: true,
+        publishVideo: true,
+        resolution: '640x480',
+        frameRate: 30,
+        insertMode: 'APPEND',
+        mirror: false
+      });
+
+      await session.publish(publisher);
+      this.openVidu.publisher = publisher;
+
+    } catch (error) {
+      console.error('There was an error connecting to the session:', error);
+      this.isInVideoCall = false;
+    }
+  }
+
+  leaveVideoCall() {
+    if (this.openVidu.session) {
+      this.openVidu.session.disconnect();
+    }
+    this.openVidu.session = undefined;
+    this.openVidu.publisher = undefined;
+    this.openVidu.subscribers = [];
+    this.isInVideoCall = false;
   }
 }
 
