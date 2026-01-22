@@ -1,16 +1,74 @@
-# SobrietyApp
+# Sobriety App (Narcotics Anonymous Support)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+A full-stack application for managing sobriety, journals, meetings, and forums for NA support. Built with Angular (Frontend) and Node.js/Express (Backend).
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm (v9+)
+
+### 🛠️ Environment Setup
+
+1. **Frontend**: The frontend connects to the backend running at `http://localhost:3001` (proxied in dev).
+2. **Backend**: Requires a `.env` file in the root directory.
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in your secrets:
+
+```env
+JWT_SECRET=your-strong-secret-key
+OPENVIDU_URL=https://your-openvidu-server
+OPENVIDU_SECRET=your-openvidu-secret
+```
+
+> **Note**: For local development, there is a default `.env` provided, but you should update the secrets for production context.
+
+### 🏃 Running the Application
+
+To start both Backend and Frontend concurrently:
+
+```bash
+npm start
+```
+
+This will run:
+- Frontend at: http://localhost:4201
+- Backend at: http://localhost:3001
+
+## 📂 Project Structure
+
+- `src/` - Angular Frontend source
+- `backend/` - Node.js/Express Backend source
+- `backend/middleware/` - Security and utility middleware
+- `backend/routes/` - API Routes (coming soon)
+
+## 🔒 Security
+
+This application implements several security features:
+- JWT Authentication with Refresh Tokens
+- Rate Limiting on API endpoints
+- Helmet for secure HTTP headers
+- Input Validation using express-validator
+- Centralized Error Handling
 
 ## Development server
 
-To start a local development server, run:
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+
+To start a local development server for frontend only, run:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
 ## Code scaffolding
 

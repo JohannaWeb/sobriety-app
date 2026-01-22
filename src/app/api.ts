@@ -5,57 +5,51 @@ import { switchMap } from 'rxjs/operators';
 import { JournalEntry } from './journal/journal';
 import { Post } from './forum/forum';
 import { MeetingRoom, Message, QueueEntry } from './meetings/meetings.model';
+import { environment } from '../environments/environment';
+import { ChangesResponse, IdResponse } from './models/api.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Api {
-  private apiUrl = '/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
-
-  login(user: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, user);
-  }
-
-  register(user: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/register`, user);
-  }
 
   getJournalEntries(): Observable<{ entries: JournalEntry[] }> {
     return this.http.get<{ entries: JournalEntry[] }>(`${this.apiUrl}/journal`);
   }
 
-  addJournalEntry(entry: { date: string, content: string, mood: string }): Observable<{ id: number }> {
-    return this.http.post<{ id: number }>(`${this.apiUrl}/journal`, entry);
+  addJournalEntry(entry: { date: string, content: string, mood: string }): Observable<IdResponse> {
+    return this.http.post<IdResponse>(`${this.apiUrl}/journal`, entry);
   }
 
-  updateJournalEntry(id: number, content: string, mood: string): Observable<{ changes: number }> {
-    return this.http.put<{ changes: number }>(`${this.apiUrl}/journal/${id}`, { content, mood });
+  updateJournalEntry(id: number, content: string, mood: string): Observable<ChangesResponse> {
+    return this.http.put<ChangesResponse>(`${this.apiUrl}/journal/${id}`, { content, mood });
   }
 
-  deleteJournalEntry(id: number): Observable<{ changes: number }> {
-    return this.http.delete<{ changes: number }>(`${this.apiUrl}/journal/${id}`);
+  deleteJournalEntry(id: number): Observable<ChangesResponse> {
+    return this.http.delete<ChangesResponse>(`${this.apiUrl}/journal/${id}`);
   }
 
   getSobrietyDate(): Observable<{ sobriety_start_date: string }> {
     return this.http.get<{ sobriety_start_date: string }>(`${this.apiUrl}/sobriety-date`);
   }
 
-  updateSobrietyDate(date: string): Observable<{ changes: number }> {
-    return this.http.put<{ changes: number }>(`${this.apiUrl}/sobriety-date`, { sobriety_start_date: date });
+  updateSobrietyDate(date: string): Observable<ChangesResponse> {
+    return this.http.put<ChangesResponse>(`${this.apiUrl}/sobriety-date`, { sobriety_start_date: date });
   }
 
   getPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.apiUrl}/posts`);
   }
 
-  createPost(post: { title: string, content: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/posts`, post);
+  createPost(post: { title: string, content: string }): Observable<IdResponse> {
+    return this.http.post<IdResponse>(`${this.apiUrl}/posts`, post);
   }
 
-  createComment(postId: number, content: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/posts/${postId}/comments`, { content });
+  createComment(postId: number, content: string): Observable<IdResponse> {
+    return this.http.post<IdResponse>(`${this.apiUrl}/posts/${postId}/comments`, { content });
   }
 
   getMeetingRooms(): Observable<{ rooms: MeetingRoom[] }> {
@@ -67,15 +61,16 @@ export class Api {
   }
 
   sendMessage(roomId: number, content: string, author?: string): Observable<Message> {
-    return this.http.post<Message>(`${this.apiUrl}/meeting-rooms/${roomId}/messages`, { content, author });
+    // Author is handled by backend token
+    return this.http.post<Message>(`${this.apiUrl}/meeting-rooms/${roomId}/messages`, { content });
   }
 
-  joinQueue(roomId: number, author?: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/meeting-rooms/${roomId}/queue`, { author });
+  joinQueue(roomId: number, author?: string): Observable<IdResponse> {
+    return this.http.post<IdResponse>(`${this.apiUrl}/meeting-rooms/${roomId}/queue`, {});
   }
 
-  leaveQueue(roomId: number, author: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/meeting-rooms/${roomId}/queue/${author}`);
+  leaveQueue(roomId: number, author: string): Observable<ChangesResponse> {
+    return this.http.delete<ChangesResponse>(`${this.apiUrl}/meeting-rooms/${roomId}/queue/${author}`);
   }
 
   getQueue(roomId: number): Observable<{ queue: QueueEntry[] }> {
@@ -90,12 +85,12 @@ export class Api {
     return this.http.get<any[]>(`${this.apiUrl}/fourth-step`);
   }
 
-  addFourthStepItem(item: any): Observable<{ id: number }> {
-    return this.http.post<{ id: number }>(`${this.apiUrl}/fourth-step`, item);
+  addFourthStepItem(item: any): Observable<IdResponse> {
+    return this.http.post<IdResponse>(`${this.apiUrl}/fourth-step`, item);
   }
 
-  deleteFourthStepItem(id: number): Observable<{ changes: number }> {
-    return this.http.delete<{ changes: number }>(`${this.apiUrl}/fourth-step/${id}`);
+  deleteFourthStepItem(id: number): Observable<ChangesResponse> {
+    return this.http.delete<ChangesResponse>(`${this.apiUrl}/fourth-step/${id}`);
   }
 
   getOpenViduToken(roomId: string): Observable<string> {
@@ -106,4 +101,3 @@ export class Api {
     );
   }
 }
-

@@ -41,4 +41,18 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
 sobriety.db
+
+# Temporary files
+message_for_user.txt
+*_reflection*.html
