@@ -1,6 +1,6 @@
 <div class="container">
   <h1>Daily Reflection</h1>
-  <mat-card>
+  <mat-card *ngIf="quote.title">
     <mat-card-header>
       <mat-card-title>{{ quote.title }}</mat-card-title>
     </mat-card-header>

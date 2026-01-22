@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
@@ -38,7 +38,7 @@ export class Motivation implements OnInit {
     }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.http.get<Quote>('/api/aa-daily-reflection').pipe(
@@ -50,6 +50,7 @@ export class Motivation implements OnInit {
       })
     ).subscribe(data => {
       this.quote = data;
+      this.cdr.detectChanges(); // Manually trigger change detection
     });
   }
 }

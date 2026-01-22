@@ -32,7 +32,7 @@ export class LoginComponent {
   onSubmit(): void {
     this.authService.login({ username: this.username, password: this.password }).subscribe((success: any) => {
       if (success) {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/journal']);
       } else {
         // Handle login failure (e.g., show an error message)
         console.error('Login failed');

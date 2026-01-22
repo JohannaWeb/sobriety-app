@@ -14,6 +14,14 @@ export class Api {
 
   constructor(private http: HttpClient) { }
 
+  login(user: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, user);
+  }
+
+  register(user: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/register`, user);
+  }
+
   getJournalEntries(): Observable<{ entries: JournalEntry[] }> {
     return this.http.get<{ entries: JournalEntry[] }>(`${this.apiUrl}/journal`);
   }
@@ -44,6 +52,10 @@ export class Api {
 
   createPost(post: { title: string, content: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/posts`, post);
+  }
+
+  createComment(postId: number, content: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/comments`, { content });
   }
 
   getMeetingRooms(): Observable<{ rooms: MeetingRoom[] }> {
@@ -94,3 +106,4 @@ export class Api {
     );
   }
 }
+

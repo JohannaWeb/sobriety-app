@@ -12,6 +12,16 @@
   <a mat-button routerLink="/meetings">Meetings</a>
   <a mat-button routerLink="/forum">Forum</a>
   <a mat-button routerLink="/fourth-step">Fourth Step</a>
+
+  <ng-container *ngIf="isLoggedIn">
+    <span class="username-display">Welcome, {{ username }}</span>
+    <button mat-button (click)="logout()">Logout</button>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoggedIn">
+    <a mat-button routerLink="/login">Login</a>
+    <a mat-button routerLink="/register">Register</a>
+  </ng-container>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

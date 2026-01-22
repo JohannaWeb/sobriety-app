@@ -2,32 +2,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
-      "request": "attach",
-      "name": "Debug Frontend",
-      "url": "http://localhost:4200",
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMaps": true,
-      "pathMapping": {
-        "/": "${workspaceFolder}/",
-        "src/": "${workspaceFolder}/src/"
-      }
-    },
-    {
       "type": "node",
       "request": "launch",
       "name": "Debug Backend",
       "program": "${workspaceFolder}/backend/server.js",
-      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "node",
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"],
-      "outputCapture": "std"
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Debug All",
-      "configurations": ["Debug Backend", "Debug Frontend"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ]
 }

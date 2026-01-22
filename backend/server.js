@@ -43,6 +43,7 @@ const authMiddleware = (req, res, next) => {
     if (err) {
       return res.status(401).json({ error: 'Invalid token.' });
     }
+    console.log('Decoded token:', decoded);
     req.user = decoded;
     next();
   });
@@ -163,6 +164,10 @@ db.serialize(() => {
     if (rows && !rows.find(row => row.name === 'mood')) {
       db.run('ALTER TABLE journal_entries ADD COLUMN mood TEXT');
     }
+    // Add user_id column if it doesn't exist
+    if (rows && !rows.find(row => row.name === 'user_id')) {
+      db.run('ALTER TABLE journal_entries ADD COLUMN user_id INTEGER REFERENCES users(id)');
+    }
   });
 
 
@@ -281,6 +286,7 @@ app.post('/api/auth/login', (req, res) => {
 
 
 app.get('/api/journal', authMiddleware, (req, res) => {
+  console.log('Fetching journal for user ID:', req.user.id);
   db.all('SELECT * FROM journal_entries WHERE user_id = ? ORDER BY date DESC', [req.user.id], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -363,6 +369,8 @@ app.get('/api/posts', authMiddleware, (req, res) => {
     });
     Promise.all(promises).then(results => {
       res.json(results);
+    }).catch(err => {
+      res.status(500).json({ error: err.message });
     });
   });
 });
@@ -514,37 +522,64 @@ app.get('/api/aa-meetings', async (req, res) => {
 // Proxy for AA Daily Reflection
 app.get('/api/aa-daily-reflection', async (req, res) => {
   try {
-    const filePath = path.join(__dirname, 'daily_reflections.json');
-    console.log(`Reading daily reflections from: ${filePath}`);
-    
-    const data = await fs.readFile(filePath, 'utf8');
-    const reflections = JSON.parse(data);
-    
-    if (!Array.isArray(reflections) || reflections.length === 0) {
-      console.warn('Daily reflections file is empty or invalid');
-      return res.status(500).json({ error: 'No reflections available' });
+    // First try to scrape from AA website
+    const response = await fetch('https://www.aa.org/daily-reflections');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.statusText}`);
     }
     
-    const today = new Date();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
-    const formattedDate = `${month}-${day}`;
+    const html = await response.text();
+    const $ = cheerio.load(html);
 
-    let reflection = reflections.find(r => r.date === formattedDate);
+    // Extract title and content from the page
+    const title = $('span.field--name-title').first().text().trim();
+    const bodyContent = $('div.field--name-body').first().text().trim();
+    const dateText = $('div').first().text().match(/[A-Za-z]+ \d+/)?.[0] || 'Today';
 
-    // If today's reflection is not found, return a random one
-    if (!reflection) {
-      console.log(`No reflection found for ${formattedDate}, returning random reflection`);
-      reflection = reflections[Math.floor(Math.random() * reflections.length)];
+    if (title && bodyContent) {
+      res.json({ 
+        title: title.replace(/^"|"$/g, ''),
+        date: dateText,
+        content: bodyContent 
+      });
+      return;
     }
+    
+    throw new Error('Could not extract reflection from website');
+  } catch (scrapingError) {
+    console.log('Web scraping failed, falling back to local JSON file:', scrapingError.message);
+    
+    // Fallback to local JSON file
+    try {
+      const filePath = path.join(__dirname, 'daily_reflections.json');
+      console.log(`Reading daily reflections from: ${filePath}`);
+      
+      const data = await fs.readFile(filePath, 'utf8');
+      const reflections = JSON.parse(data);
+      
+      if (!Array.isArray(reflections) || reflections.length === 0) {
+        return res.status(500).json({ error: 'No reflections available' });
+      }
+      
+      const today = new Date();
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const day = today.getDate().toString().padStart(2, '0');
+      const formattedDate = `${month}-${day}`;
 
-    res.json(reflection);
-  } catch (error) {
-    console.error('Error serving AA Daily Reflection:', error);
-    res.status(500).json({ error: `Failed to serve AA Daily Reflection: ${error.message}` });
+      let reflection = reflections.find(r => r.date === formattedDate);
+
+      if (!reflection) {
+        console.log(`No reflection found for ${formattedDate}, returning random reflection`);
+        reflection = reflections[Math.floor(Math.random() * reflections.length)];
+      }
+
+      res.json(reflection);
+    } catch (error) {
+      console.error('Error serving AA Daily Reflection:', error);
+      res.status(500).json({ error: `Failed to serve AA Daily Reflection: ${error.message}` });
+    }
   }
 });
-
 // Fourth Step API
 app.get('/api/fourth-step', authMiddleware, (req, res) => {
   db.all('SELECT * FROM fourth_step_inventory WHERE user_id = ?', [req.user.id], (err, rows) => {

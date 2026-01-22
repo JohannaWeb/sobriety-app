@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule, MatCardActions } from '@angular/material/card';
@@ -38,7 +38,7 @@ export class Journal implements OnInit {
   editingEntryId: number | null = null;
   moods = ['😃', '😐', '😢', '😠'];
 
-  constructor(private fb: UntypedFormBuilder, private api: Api) {
+  constructor(private fb: UntypedFormBuilder, private api: Api, private cdr: ChangeDetectorRef) {
     this.entryForm = this.fb.group({
       content: ['', Validators.required],
       mood: ['', Validators.required]
@@ -46,8 +46,13 @@ export class Journal implements OnInit {
   }
 
   ngOnInit() {
+    this.loadEntries();
+  }
+
+  loadEntries() {
     this.api.getJournalEntries().subscribe(res => {
       this.entries = res.entries;
+      this.cdr.detectChanges(); // Manually trigger change detection
     });
   }
 
@@ -55,7 +60,7 @@ export class Journal implements OnInit {
     if (this.entryForm.valid) {
       if (this.isEditing) {
         this.api.updateJournalEntry(this.editingEntryId!, this.entryForm.value.content, this.entryForm.value.mood).subscribe(() => {
-          this.ngOnInit();
+          this.loadEntries();
           this.cancelEdit();
         });
       } else {
@@ -65,7 +70,7 @@ export class Journal implements OnInit {
           mood: this.entryForm.value.mood
         };
         this.api.addJournalEntry(newEntry).subscribe(() => {
-          this.ngOnInit(); // Refresh the entries
+          this.loadEntries(); // Refresh the entries
           this.entryForm.reset();
         });
       }
@@ -83,7 +88,7 @@ export class Journal implements OnInit {
 
   deleteEntry(id: number) {
     this.api.deleteJournalEntry(id).subscribe(() => {
-      this.ngOnInit();
+      this.loadEntries();
     });
   }
 
