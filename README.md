@@ -62,5 +62,7 @@ For more information on using the Angular CLI, including detailed command refere
 
 <img width="2555" height="454" alt="image" src="https://github.com/user-attachments/assets/78a13830-4f13-4a3b-85b3-88fb2dea0717" />
 <img width="2558" height="1091" alt="image" src="https://github.com/user-attachments/assets/473e41a5-5161-4697-9363-402524213c2a" />
+<img width="2556" height="627" alt="image" src="https://github.com/user-attachments/assets/da8071ec-fea6-44f5-b65b-753107d5feac" />
+
 
 
