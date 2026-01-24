@@ -1,42 +1,80 @@
-<div class="container">
-  <h1>Journal</h1>
-  <p>Log your thoughts and feelings here.</p>
+<div class="container container-narrow">
+  <div class="header-section">
+    <h1>My Journal</h1>
+    <p>Capture your journey, one day at a time.</p>
+  </div>
 
-  <form [formGroup]="entryForm" (ngSubmit)="submitEntry()">
-    <mat-form-field appearance="fill">
-      <mat-label>New Entry</mat-label>
-      <textarea matInput formControlName="content" placeholder="Write about your day..."></textarea>
-    </mat-form-field>
+  <!-- Add Entry Card -->
+  <div class="glass-card compose-card">
+    <div class="card-header">
+      <h3><mat-icon>edit_note</mat-icon> {{ isEditing ? 'Edit Entry' : 'New Entry' }}</h3>
+    </div>
 
-    <mat-radio-group formControlName="mood" class="mood-group">
-      <mat-label>Mood:</mat-label>
-      @for (mood of moods; track mood) {
-        <mat-radio-button [value]="mood">{{ mood }}</mat-radio-button>
-      }
-    </mat-radio-group>
+    <form [formGroup]="entryForm" (ngSubmit)="submitEntry()">
+      <div class="mood-selector">
+        <label>How are you feeling?</label>
+        <mat-radio-group formControlName="mood" class="mood-options">
+          @for (mood of moods; track mood) {
+          <mat-radio-button [value]="mood" [class.selected]="entryForm.get('mood')?.value === mood">
+            <span class="mood-emoji">{{ mood }}</span>
+          </mat-radio-button>
+          }
+        </mat-radio-group>
+      </div>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="!entryForm.valid">
-      {{ isEditing ? 'Update Entry' : 'Add Entry' }}
-    </button>
-    <button mat-button color="warn" (click)="cancelEdit()" *ngIf="isEditing">Cancel</button>
-  </form>
+      <mat-form-field appearance="outline" class="full-width journal-input">
+        <textarea matInput formControlName="content" placeholder="What's on your mind today?" rows="4"></textarea>
+      </mat-form-field>
 
-  <div class="entries">
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelEdit()" *ngIf="isEditing" class="btn-cancel">
+          Cancel
+        </button>
+        <button class="btn-primary" type="submit" [disabled]="!entryForm.valid">
+          {{ isEditing ? 'Update Entry' : 'Save Entry' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-container">
     @if (!entries.length) {
-      <h2>No entries yet. Add one to get started!</h2>
+    <div class="empty-state">
+      <mat-icon>import_contacts</mat-icon>
+      <h3>Your journal is empty</h3>
+      <p>Start writing to track your progress.</p>
+    </div>
     }
-    @for (entry of entries; track entry.id) {
-      <mat-card>
-        <mat-card-title>Journal Entry <span class="mood">{{ entry.mood }}</span></mat-card-title>
-        <mat-card-subtitle>{{ entry.date | date:'short' }}</mat-card-subtitle>
-        <mat-card-content>
-          <p>{{ entry.content }}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="editEntry(entry)">Edit</button>
-          <button mat-button color="warn" (click)="deleteEntry(entry.id!)">Delete</button>
-        </mat-card-actions>
-      </mat-card>
-    }
+
+    <div class="timeline">
+      @for (entry of entries; track entry.id) {
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content glass-card">
+          <div class="entry-header">
+            <div class="entry-date">{{ entry.date | date:'longDate' }}</div>
+            <div class="entry-mood">{{ entry.mood }}</div>
+          </div>
+
+          <div class="entry-body">
+            <p>{{ entry.content }}</p>
+          </div>
+
+          <div class="entry-actions">
+            <span class="timestamp">{{ entry.date | date:'shortTime' }}</span>
+            <div class="action-buttons">
+              <button mat-icon-button (click)="editEntry(entry)" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteEntry(entry.id!)" matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
   </div>
 </div>

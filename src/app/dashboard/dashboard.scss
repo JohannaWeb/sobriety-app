@@ -1,54 +1,206 @@
-.counter {
-  margin-top: 20px;
-  text-align: center;
-  margin-bottom: 20px;
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.timer {
+.hero-section {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
-  font-size: 2em;
-  font-weight: bold;
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+
+  /* Glow background effect */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: var(--color-primary);
+    filter: blur(80px);
+    opacity: 0.15;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
-.timer span {
+.progress-circle-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  .progress-ring {
+    transform: rotate(-90deg);
+
+    &__circle {
+      transition: stroke-dashoffset 0.35s;
+      transform-origin: 50% 50%;
+      stroke-dasharray: 628;
+      /* 2 * PI * r */
+      stroke-dashoffset: 0;
+      /* Full circle for now */
+      animation: progress-fill 1.5s ease-out forwards;
+    }
+  }
+
+  .progress-content {
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .days-count {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+  }
+
+  .days-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+  }
+
+  .milestone-badge {
+    margin-top: 0.5rem;
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--color-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.stats-grid {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  z-index: 1;
+
+  .stat-item {
+    text-align: center;
+
+    .stat-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+    }
+  }
+}
+
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--color-text-secondary);
+
+    mat-icon {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Chart Placeholder Styles */
+.chart-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f0f0f0;
 }
 
-mat-card {
-  max-width: 400px;
-  margin: 20px auto;
-}
-
-form {
+.chart-placeholder {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 150px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .bar {
+    width: 12%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px 4px 0 0;
+    transition: height 1s ease-out;
+    position: relative;
+
+    &.active {
+      background: var(--gradient-primary);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+  }
 }
 
-.milestones-card {
-  margin-top: 20px;
-}
-
-.milestones-card p {
-  padding: 5px 0;
-  border-bottom: 1px solid #eee;
+.chart-labels {
   display: flex;
   justify-content: space-between;
+  margin-top: 8px;
+
+  span {
+    width: 12%;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
 }
 
-.milestones-card p:last-child {
-  border-bottom: none;
-}
+@keyframes progress-fill {
+  from {
+    stroke-dashoffset: 628;
+  }
 
-.achieved {
-  color: green;
-  font-weight: bold;
+  to {
+    stroke-dashoffset: 0;
+  }
 }

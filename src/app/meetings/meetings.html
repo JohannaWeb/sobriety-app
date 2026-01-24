@@ -1,94 +1,142 @@
-<div class="container">
-  <h1>Meetings</h1>
-  <mat-tab-group>
-    <mat-tab label="Online Meetings">
-      <iframe src="https://aa-intergroup.org/meetings/" class="embedded-meetings"></iframe>
-    </mat-tab>
-    <mat-tab label="Meeting Rooms">
-      <div *ngIf="!selectedMeetingRoom">
-        <h2>Text Meetings</h2>
-        <mat-card>
-          <mat-card-content>
-            <mat-list>
-              @for (room of meetingRooms; track room.id) {
-                <mat-list-item (click)="selectRoom(room)">
-                  <h3 mat-line>{{ room.name }}</h3>
-                  <p mat-line>{{ room.description }}</p>
-                </mat-list-item>
-              }
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-      </div>
+<div class="container container-wide">
+  <div class="header-section">
+    <h1>Community Meetings</h1>
+    <p>Connect with others in safe, supportive spaces.</p>
+  </div>
 
-      <div *ngIf="selectedMeetingRoom" class="chat-room">
-        <button mat-button (click)="selectedMeetingRoom = null; stopPolling()" class="back-button">
-          &lt; Back to Rooms
-        </button>
-        <h2>{{ selectedMeetingRoom.name }}</h2>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" animationDuration="0ms">
+    <!-- Meeting Rooms Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">meeting_room</mat-icon>
+        Meeting Rooms
+      </ng-template>
 
-        <div class="sharing-queue-section">
-          <h3>Sharing Queue</h3>
-          <div *ngIf="currentSharer" class="current-sharer">
-            <strong>Currently Sharing:</strong> {{ currentSharer.author }}
+      <div class="rooms-layout">
+        <!-- Room List (Left Panel) -->
+        <div class="room-list glass-card" [class.hidden-mobile]="selectedMeetingRoom">
+          <div class="panel-header">
+            <h3>Available Rooms</h3>
           </div>
-          <div *ngIf="sharingQueue.length > 0">
-            <strong>Next in Queue:</strong>
-            <mat-list>
-              @for (entry of sharingQueue; track entry.id) {
-                <mat-list-item>
-                  {{ entry.author }}
-                  <button mat-icon-button *ngIf="entry.author === messageAuthor" (click)="leaveQueue()">
-                    <mat-icon>remove_circle_outline</mat-icon>
-                  </button>
-                </mat-list-item>
-              }
-            </mat-list>
-          </div>
-          <button mat-raised-button color="accent" (click)="joinQueue()" [disabled]="isInQueue">Join Share Queue</button>
-          <button mat-raised-button color="warn" (click)="leaveQueue()" [disabled]="!isInQueue">Leave Queue</button>
+          <mat-nav-list class="room-nav">
+            @for (room of meetingRooms; track room.id) {
+            <a mat-list-item (click)="selectRoom(room)" [class.active-room]="selectedMeetingRoom?.id === room.id">
+              <mat-icon matListItemIcon>chat_bubble_outline</mat-icon>
+              <div matListItemTitle>{{ room.name }}</div>
+              <div matListItemLine class="room-desc">{{ room.description }}</div>
+              <mat-icon matListItemMeta>chevron_right</mat-icon>
+            </a>
+            }
+          </mat-nav-list>
         </div>
 
-        <div class="voice-call-section">
-          <h3>Audio/Video Call</h3>
-          <div *ngIf="activeVoiceParticipants.length > 0 && !isInVideoCall" class="active-participants">
-            <strong>Active Participants (Audio):</strong> {{ activeVoiceParticipants.join(', ') }}
+        <!-- Active Room (Right Panel) -->
+        <div class="active-room glass-card" *ngIf="selectedMeetingRoom">
+          <!-- Room Header -->
+          <div class="room-header">
+            <button mat-icon-button class="back-btn mobile-only" (click)="selectedMeetingRoom = null; stopPolling()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="room-info">
+              <h2>{{ selectedMeetingRoom.name }}</h2>
+              <span class="status-badge live">
+                <span class="pulse"></span> Live
+              </span>
+            </div>
+            <div class="room-actions">
+              <button mat-stroked-button color="primary" (click)="joinQueue()" [disabled]="isInQueue">
+                <mat-icon>handshake</mat-icon> Request Share
+              </button>
+
+              <button mat-flat-button color="primary" *ngIf="!isInCall()" [matMenuTriggerFor]="callMenu">
+                <mat-icon>videocam</mat-icon> Join Call
+              </button>
+              <mat-menu #callMenu="matMenu">
+                <button mat-menu-item (click)="joinVoiceCall()">Audio Only</button>
+                <button mat-menu-item (click)="joinVideoCall()">Video Call</button>
+              </mat-menu>
+
+              <button mat-flat-button color="warn" *ngIf="isInCall()" (click)="leaveCall()">
+                <mat-icon>call_end</mat-icon> Leave
+              </button>
+            </div>
           </div>
-        
-          <div *ngIf="!isInCall()">
-            <button mat-raised-button color="primary" (click)="joinVoiceCall()">Join Audio Call</button>
-            <button mat-raised-button color="accent" (click)="joinVideoCall()">Join Video Call</button>
-          </div>
-        
-          <div *ngIf="isInCall()">
-            <button mat-raised-button color="warn" (click)="leaveCall()">Leave Call</button>
-          </div>
-        
-          <div *ngIf="isInVideoCall && openVidu.session">
+
+          <!-- Video Area -->
+          <div class="video-area" *ngIf="isInVideoCall && openVidu.session">
             <app-video-call [publisher]="openVidu.publisher" [subscribers]="openVidu.subscribers"></app-video-call>
           </div>
+
+          <!-- Active Participants Info -->
+          <div class="participants-bar" *ngIf="activeVoiceParticipants.length > 0 && !isInVideoCall">
+            <span class="label">Audio Participants:</span>
+            <div class="avatars">
+              @for (participant of activeVoiceParticipants; track participant) {
+              <div class="avatar" [matTooltip]="participant">{{ participant.charAt(0).toUpperCase() }}</div>
+              }
+            </div>
+          </div>
+
+          <!-- Chat Area -->
+          <div class="chat-container">
+            <div class="messages-list">
+              @for (message of messages; track message.id) {
+              <div class="message-bubble" [class.mine]="message.author === messageAuthor">
+                <div class="message-meta" *ngIf="message.author !== messageAuthor">
+                  <span class="author-name">{{ message.author }}</span>
+                </div>
+                <div class="bubble-content">
+                  {{ message.content }}
+                </div>
+                <div class="message-time">{{ message.timestamp | date:'shortTime' }}</div>
+              </div>
+              }
+            </div>
+
+            <div class="input-area">
+              <input type="text" placeholder="Type a message..." [(ngModel)]="newMessageContent"
+                (keyup.enter)="sendMessage()">
+              <button mat-icon-button color="primary" (click)="sendMessage()" [disabled]="!newMessageContent.trim()">
+                <mat-icon>send</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Queue Overlay/Sidebar -->
+          <div class="queue-panel" *ngIf="sharingQueue.length > 0">
+            <div class="queue-header">Sharing Queue</div>
+            <mat-list dense>
+              @for (entry of sharingQueue; track entry.id) {
+              <mat-list-item>
+                <mat-icon matListItemIcon>person</mat-icon>
+                <div matListItemTitle>{{ entry.author }}</div>
+                <button mat-icon-button matListItemMeta *ngIf="entry.author === messageAuthor" (click)="leaveQueue()"
+                  color="warn">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-list-item>
+              }
+            </mat-list>
+          </div>
+
         </div>
 
-        <mat-form-field class="full-width">
-          <mat-label>Your Name</mat-label>
-          <input matInput [(ngModel)]="messageAuthor" placeholder="Enter your name">
-        </mat-form-field>
-
-        <div class="messages-container">
-          @for (message of messages; track message.id) {
-            <mat-card class="message-card">
-              <mat-card-content>
-                <p class="message-author">{{ message.author }} at {{ message.timestamp | date:'shortTime' }}</p>
-                <p class="message-content">{{ message.content }}</p>
-              </mat-card-content>
-            </mat-card>
-          }
+        <!-- Select Room Placeholder -->
+        <div class="active-room glass-card placeholder" *ngIf="!selectedMeetingRoom">
+          <mat-icon>groups</mat-icon>
+          <h3>Select a room to join the conversation</h3>
         </div>
-        <mat-form-field class="full-width">
-          <mat-label>Message</mat-label>
-          <input matInput [(ngModel)]="newMessageContent" (keyup.enter)="sendMessage()" placeholder="Type your message...">
-        </mat-form-field>
-        <button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+      </div>
+    </mat-tab>
+
+    <!-- Online Meetings Tab (Iframe) -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">public</mat-icon>
+        Global Directory
+      </ng-template>
+      <div class="iframe-container glass-card">
+        <iframe src="https://aa-intergroup.org/meetings/" class="embedded-meetings"></iframe>
       </div>
     </mat-tab>
   </mat-tab-group>

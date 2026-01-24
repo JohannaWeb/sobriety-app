@@ -19,10 +19,26 @@ import { VideoCallComponent } from '../video-call/video-call';
 
 
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-meetings',
-  imports: [CommonModule, HttpClientModule, MatCardModule, MatListModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule, MatIconModule, VideoCallComponent, MatTabsModule],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    MatCardModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    FormsModule,
+    MatIconModule,
+    VideoCallComponent,
+    MatTabsModule,
+    MatMenuModule,
+    MatTooltipModule
+  ],
   templateUrl: './meetings.html',
   styleUrls: ['./meetings.scss'],
   standalone: true // This component is standalone
@@ -35,7 +51,7 @@ export class Meetings implements OnInit, OnDestroy {
   messageAuthor: string = 'Anonymous'; // Temporary author for messages
   sharingQueue: QueueEntry[] = [];
   currentSharer: QueueEntry | null = null;
-  
+
   // WebRTC specific properties
   ws: WebSocket | null = null;
   localStream: MediaStream | null = null;
@@ -53,7 +69,7 @@ export class Meetings implements OnInit, OnDestroy {
 
   private pollingSubscription: Subscription | null = null;
 
-  constructor(private http: HttpClient, private api: Api, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private http: HttpClient, private api: Api, @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
 
@@ -153,7 +169,7 @@ export class Meetings implements OnInit, OnDestroy {
     }
 
     // Replace with your signaling server URL
-    this.ws = new WebSocket(`ws://localhost:3000`); 
+    this.ws = new WebSocket(`ws://localhost:3000`);
 
     this.ws.onopen = () => {
       console.log('WebSocket connected');
@@ -236,7 +252,7 @@ export class Meetings implements OnInit, OnDestroy {
   createPeer(remoteAuthor: string, initiator: boolean, stream: MediaStream): Peer.Instance {
     const peer = new Peer({
       initiator: initiator,
-      trickle: false, 
+      trickle: false,
       stream: stream,
       config: { // Default public STUN servers
         iceServers: [
@@ -264,7 +280,7 @@ export class Meetings implements OnInit, OnDestroy {
       audio.autoplay = true;
       document.body.appendChild(audio); // Append dynamically, later can be placed in specific div
       this.remoteAudioElements.push(audio);
-      
+
       // Update activeVoiceParticipants
       this.updateActiveVoiceParticipants();
     });
@@ -368,7 +384,7 @@ export class Meetings implements OnInit, OnDestroy {
     }
 
     // Connect WebSocket first if not already connected (should be from selectRoom)
-    this.connectWebSocket(); 
+    this.connectWebSocket();
 
     // Send a message to the signaling server to indicate we are ready for WebRTC
     // The signaling server will then notify other users in the room
@@ -411,10 +427,10 @@ export class Meetings implements OnInit, OnDestroy {
 
   async joinVideoCall() {
     if (!this.selectedMeetingRoom) return;
-    
+
     // Temporarily disable voice call when in a video call
     if (this.isInVoiceCall) {
-        this.leaveVoiceCall();
+      this.leaveVoiceCall();
     }
 
     this.isInVideoCall = true;

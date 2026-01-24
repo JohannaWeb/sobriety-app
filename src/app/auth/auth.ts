@@ -14,15 +14,18 @@ import { LoggerService } from '../core/services/logger.service';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
-  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
-  isLoggedIn = this.loggedIn.asObservable();
+  private loggedIn!: BehaviorSubject<boolean>;
+  isLoggedIn!: Observable<boolean>;
 
   constructor(
     private router: Router,
     private http: HttpClient,
     private storageService: StorageService,
     private logger: LoggerService
-  ) { }
+  ) {
+    this.loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+    this.isLoggedIn = this.loggedIn.asObservable();
+  }
 
   private hasToken(): boolean {
     return !!this.storageService.getItem('auth_token');

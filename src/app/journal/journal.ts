@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule, MatCardActions } from '@angular/material/card';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { Api } from '../api';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface JournalEntry {
   id?: number;
@@ -26,10 +27,13 @@ export interface JournalEntry {
     MatButtonModule,
     MatCardModule,
     MatCardActions,
-    MatRadioModule
+    MatCardActions,
+    MatRadioModule,
+    MatIconModule
   ],
   templateUrl: './journal.html',
   styleUrl: './journal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Journal implements OnInit {
   entryForm: UntypedFormGroup;

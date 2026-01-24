@@ -3,20 +3,219 @@
 // Include the common styles for Angular Material.
 @include mat.core();
 
-// You can add global styles to this file, and also import other style files
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (Imported above). For this app, we define the palette to match our custom variables.
+// // Define the palettes for your theme using the Material Design palettes available in palette.scss
+// // (Imported above). For this app, we define the palette to match our custom variables.
+// $sobriety-primary: mat.define-palette(mat.$indigo-palette);
+// $sobriety-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
+// // The warn palette is optional (defaults to red).
+// $sobriety-warn: mat.define-palette(mat.$red-palette);
+
+// // Create the theme object.
+// $sobriety-theme: mat.define-light-theme((color: (primary: $sobriety-primary,
+//         accent: $sobriety-accent,
+//         warn: $sobriety-warn,
+//       )));
+
+// // Include theme styles for core and each component used in your app.
+// // Alternatively, you can import and @include the theme mixins for each component
+// // that you are using.
+// @include mat.all-component-themes($sobriety-theme);
+
+:root {
+  /* Color Palette - AA Blue Theme (High Contrast) */
+  --color-bg-primary: #002244;
+  /* Deep Royal Blue / Navy */
+  --color-bg-secondary: #003366;
+  /* Lighter Midnight Blue */
+  --color-bg-card: rgba(0, 51, 102, 0.7);
+  /* Glassmorphism Blue Base */
+
+  --color-primary: #4fc3f7;
+  /* Clean Bright Blue (cyan-ish for contrast) */
+  --color-primary-glow: rgba(79, 195, 247, 0.4);
+
+  --color-accent: #ffd700;
+  /* Gold (Sobriety Token Color) */
+  --color-accent-glow: rgba(255, 215, 0, 0.4);
+
+  --color-text-primary: #ffffff;
+  /* Pure White for max contrast */
+  --color-text-secondary: #e0e6ed;
+  /* Very Light Blue-Grey */
+
+  --color-danger: #ff5252;
+  --color-success: #4caf50;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+  /* Blue gradient */
+  --gradient-accent: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+  /* Gold gradient */
+  --gradient-dark: linear-gradient(to bottom right, #002244, #001122);
+
+  /* Shadows & Glows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-neon: 0 0 10px var(--color-primary-glow),
+    0 0 20px var(--color-primary-glow);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Inter', "Helvetica Neue", sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(79, 195, 247, 0.08) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 25%);
+  background-attachment: fixed;
+}
+
+/* Typography Utility Classes */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Layout Utilities */
 .container {
-  padding: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.gap-md {
+  gap: var(--spacing-md);
 }
 
 .spacer {
   flex: 1 1 auto;
 }
 
-/* Custom styles for LGBT inclusiveness */
+/* Component Utilities */
+.glass-card {
+  background: var(--color-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+  }
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Angular Material Overrides for Dark Theme */
+.mat-mdc-card {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-drawer-container {
+  background-color: transparent !important;
+}
+
 .mat-toolbar {
-  background: linear-gradient(to right, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3) !important;
-  color: white; /* Ensure text is visible on the gradient */
+  background-color: transparent !important;
+  color: var(--color-text-primary) !important;
 }

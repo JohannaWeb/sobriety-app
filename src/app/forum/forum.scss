@@ -1,15 +1,151 @@
-.container {
-  padding: 20px;
+.container-narrow {
+  max-width: 800px;
 }
 
-.post-form {
-  margin-bottom: 20px;
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
 }
 
-mat-form-field {
+.create-post-card {
+  margin-bottom: 2rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Post Cards */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.post-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+
+  .avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-direction: column;
+
+    .author {
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+.post-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-primary);
+}
+
+.post-content {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.post-footer {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.75rem;
+
+  button {
+    color: var(--color-text-secondary);
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.comments-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+
+  .comment-preview {
+    font-size: 0.9rem;
+    padding: 4px 0;
+
+    .comment-author {
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-right: 6px;
+    }
+
+    .comment-text {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .view-all {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+}
+
+.full-width {
   width: 100%;
-}
-
-.post-list mat-card {
-  margin-top: 20px;
 }

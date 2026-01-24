@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Api } from './api';
 
 @Injectable({
@@ -17,8 +18,10 @@ export class SobrietyService {
   }
 
   updateSobrietyStartDate(date: Date) {
-    this.api.updateSobrietyDate(date.toISOString()).subscribe(() => {
-      this.sobrietyStartDate.next(date);
-    });
+    return this.api.updateSobrietyDate(date.toISOString()).pipe(
+      tap(() => {
+        this.sobrietyStartDate.next(date);
+      })
+    );
   }
 }

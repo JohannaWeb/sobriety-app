@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 import { Api } from '../api';
 
 export interface Post {
@@ -31,16 +32,22 @@ export interface Comment {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatIconModule
   ],
   templateUrl: './forum.html',
   styleUrls: ['./forum.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Forum implements OnInit {
   posts: Post[] = [];
   postForm: UntypedFormGroup;
 
-  constructor(private fb: UntypedFormBuilder, private api: Api) {
+  constructor(
+    private fb: UntypedFormBuilder,
+    private api: Api,
+    private cdr: ChangeDetectorRef
+  ) {
     this.postForm = this.fb.group({
       title: [''],
       content: ['']
@@ -50,6 +57,7 @@ export class Forum implements OnInit {
   ngOnInit() {
     this.api.getPosts().subscribe(posts => {
       this.posts = posts;
+      this.cdr.markForCheck();
     });
   }
 

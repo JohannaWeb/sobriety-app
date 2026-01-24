@@ -1,26 +1,80 @@
-<div class="container">
-  <h1>Dashboard</h1>
-  <p>Welcome to your sobriety tracker!</p>
+<div class="dashboard-container">
+  <!-- Hero Section: Sobriety Counter -->
+  <div class="hero-section glass-card">
+    <div class="progress-circle-container">
+      <svg class="progress-ring" width="220" height="220">
+        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12" fill="transparent"
+          r="100" cx="110" cy="110" />
+        <circle class="progress-ring__circle" stroke="url(#gradient)" stroke-width="12" stroke-linecap="round"
+          fill="transparent" r="100" cx="110" cy="110" />
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#10b981" />
+            <stop offset="100%" stop-color="#059669" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="progress-content">
+        <div class="days-count">{{ days }}</div>
+        <div class="days-label">DAYS SOBER</div>
+        <div class="milestone-badge">
+          <mat-icon>emoji_events</mat-icon> Going Strong!
+        </div>
+      </div>
+    </div>
 
-  <div class="counter">
-    <h2>You have been sober for:</h2>
-    <div class="timer">
-      <span>{{ days }} days</span>
-      <span>{{ hours }} hours</span>
-      <span>{{ minutes }} minutes</span>
-      <span>{{ seconds }} seconds</span>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-value">{{ hours }}</span>
+        <span class="stat-label">Hours</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ minutes }}</span>
+        <span class="stat-label">Minutes</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ seconds }}</span>
+        <span class="stat-label">Seconds</span>
+      </div>
     </div>
   </div>
 
-  <mat-card>
-    <mat-card-content>
+  <!-- Content Grid -->
+  <div class="content-grid">
+    <!-- Quick Action / Date Edit -->
+    <div class="glass-card action-card">
+      <div class="card-header">
+        <h3><mat-icon>edit_calendar</mat-icon> Start Date</h3>
+      </div>
       <form [formGroup]="dateForm" (ngSubmit)="saveNewStartDate()">
-        <mat-form-field>
-          <mat-label>Sobriety Start Date</mat-label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Reset Date</mat-label>
           <input matInput type="datetime-local" formControlName="newDate">
+          <mat-icon matSuffix>calendar_today</mat-icon>
         </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">Save</button>
+        <button class="btn-primary full-width" type="submit">
+          Update Date
+        </button>
       </form>
-    </mat-card-content>
-  </mat-card>
+    </div>
+
+    <!-- Placeholder for Weekly Chart / Activity -->
+    <div class="glass-card chart-card">
+      <div class="card-header">
+        <h3><mat-icon>show_chart</mat-icon> Weekly Activity</h3>
+      </div>
+      <div class="chart-placeholder">
+        <div class="bar" style="height: 40%"></div>
+        <div class="bar" style="height: 70%"></div>
+        <div class="bar" style="height: 50%"></div>
+        <div class="bar" style="height: 90%"></div>
+        <div class="bar active" style="height: 100%"></div>
+        <div class="bar" style="height: 60%"></div>
+        <div class="bar" style="height: 30%"></div>
+      </div>
+      <div class="chart-labels">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+    </div>
+  </div>
 </div>

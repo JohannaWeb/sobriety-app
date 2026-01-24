@@ -42,6 +42,12 @@ app.use(cors({
   credentials: true
 }));
 
+// Disable caching for API
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 // Request parsing
 app.use(express.json({ limit: '10mb' }));
 

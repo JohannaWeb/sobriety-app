@@ -1,31 +1,86 @@
-<div class="container">
-  <h1>Community Forum</h1>
+<div class="container container-narrow">
+  <div class="header-section">
+    <h1>Community Forum</h1>
+    <p>Share, ask, and support each other.</p>
+  </div>
 
-  <mat-card class="post-form">
-    <mat-card-content>
-      <form [formGroup]="postForm" (ngSubmit)="createPost()">
-        <mat-form-field>
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="title">
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Content</mat-label>
-          <textarea matInput formControlName="content"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">Create Post</button>
-      </form>
-    </mat-card-content>
-  </mat-card>
+  <!-- Create Post Section -->
+  <div class="glass-card full-width create-post-card">
+    <div class="card-header">
+      <h3><mat-icon>post_add</mat-icon> Create a New Discussion</h3>
+    </div>
+    <form [formGroup]="postForm" (ngSubmit)="createPost()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="What's on your mind?">
+        <mat-icon matPrefix>title</mat-icon>
+      </mat-form-field>
 
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Content</mat-label>
+        <textarea matInput formControlName="content" rows="4" placeholder="Share your details..."></textarea>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button class="btn-primary" type="submit" [disabled]="!postForm.valid">
+          Post Discussion
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Posts List -->
   <div class="post-list">
+    @if (!posts.length) {
+    <div class="empty-state">
+      <mat-icon>forum</mat-icon>
+      <h3>No discussions yet</h3>
+      <p>Be the first to start a conversation!</p>
+    </div>
+    }
+
     @for (post of posts; track post._id) {
-      <mat-card>
-        <mat-card-title>{{ post.title }}</mat-card-title>
-        <mat-card-subtitle>by {{ post.author }}</mat-card-subtitle>
-        <mat-card-content>
-          <p>{{ post.content }}</p>
-        </mat-card-content>
-      </mat-card>
+    <div class="glass-card post-card">
+      <div class="post-header">
+        <div class="avatar-placeholder">{{ post.author.charAt(0).toUpperCase() }}</div>
+        <div class="post-meta">
+          <span class="author">{{ post.author }}</span>
+          <span class="timestamp">Just now</span> <!-- Placeholder for actual timestamp if available -->
+        </div>
+      </div>
+
+      <h2 class="post-title">{{ post.title }}</h2>
+      <div class="post-content">
+        <p>{{ post.content }}</p>
+      </div>
+
+      <div class="post-footer">
+        <button mat-button color="primary">
+          <mat-icon>comment</mat-icon> {{ post.comments?.length || 0 }} Comments
+        </button>
+        <button mat-button>
+          <mat-icon>share</mat-icon> Share
+        </button>
+        <span class="spacer"></span>
+        <button mat-icon-button>
+          <mat-icon>bookmark_border</mat-icon>
+        </button>
+      </div>
+
+      <!-- Comments Preview (Optional) -->
+      <div class="comments-section" *ngIf="post.comments?.length">
+        <mat-divider></mat-divider>
+        @for (comment of post.comments.slice(0, 2); track comment) {
+        <div class="comment-preview">
+          <span class="comment-author">{{ comment.author }}:</span>
+          <span class="comment-text">{{ comment.content }}</span>
+        </div>
+        }
+        <div class="view-all" *ngIf="post.comments.length > 2">
+          View all {{ post.comments.length }} comments
+        </div>
+      </div>
+    </div>
     }
   </div>
 </div>
